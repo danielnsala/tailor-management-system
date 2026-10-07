@@ -36,6 +36,11 @@ def get_measurement_sets(
 ):
     service = MeasurementService(db)
     measurement_sets = service.get_measurement_sets(customer_id)
+    if measurement_sets is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Customer not found",
+        )
     return measurement_sets
 
 @router.get("/{measurement_set_id}", response_model=MeasurementSetResponse)

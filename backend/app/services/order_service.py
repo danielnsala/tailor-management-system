@@ -38,13 +38,19 @@ class OrderService:
         self.db_session.refresh(new_order)
         return new_order
 
-    def get_orders(self, customer_id: int) -> list[Order]:
+    def get_orders(self, customer_id: int) -> list[Order] | None:
+        customer = self.db_session.get(Customer, customer_id)
+        if customer is None:
+            return None
         return self.db_session.execute(
             select(Order).where(Order.customer_id == customer_id)
         ).scalars().all()
 
 
     def get_order(self, customer_id: int, order_id: int) -> Order | None:
+        customer = self.db_session.get(Customer, customer_id)
+        if customer is None:
+            return None
         return self.db_session.execute(
             select(Order).where(
                 Order.id == order_id,

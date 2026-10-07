@@ -42,7 +42,11 @@ class MeasurementService:
     def get_measurement_sets(
         self,
         customer_id: int,
-    ) -> list[MeasurementSet]:
+    ) -> list[MeasurementSet] | None:
+        customer = self.db_session.get(Customer, customer_id)
+        if customer is None:
+            return None
+
         return self.db_session.execute(
             select(MeasurementSet).where(
                 MeasurementSet.customer_id == customer_id

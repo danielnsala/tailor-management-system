@@ -47,3 +47,9 @@ class OrderResponse(BaseModel):
     created_at: datetime
 
     jobs: list[JobResponse]
+
+class OrderFinancialSummary(BaseModel):
+    order_id: int
+    total_price: Decimal
+    amount_paid: Decimal
+    balance: Decimal
