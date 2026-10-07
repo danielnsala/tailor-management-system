@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.routers.customers import router as customers_router
 from app.routers.measurements import router as measurements_router
+from app.routers.orders import router as orders_router
 
 app = FastAPI(
     title="Tailor Management System",
@@ -9,3 +10,4 @@ app = FastAPI(
 )
 app.include_router(customers_router)
 app.include_router(measurements_router)
+app.include_router(orders_router)
