@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.schemas.order import OrderCreate, OrderFinancialSummary, OrderResponse
+from app.schemas.order import OrderCreate, OrderFinancialSummary, OrderResponse, OrderUpdate
 from app.services.order_service import OrderService
 from app.services.payment_service import PaymentService
 
@@ -92,3 +92,29 @@ def get_order_financial_summary(
         amount_paid=paid,
         balance=balance,
     )
+
+@router.patch(
+    "/{order_id}",
+    response_model=OrderResponse,
+)
+def update_order_status(
+    customer_id: int,
+    order_id: int,
+    order_update: OrderUpdate,
+    db: Session = Depends(get_db),
+):
+    service = OrderService(db)
+
+    updated_order = service.update_order_status(
+        customer_id,
+        order_id,
+        order_update.status,
+    )
+
+    if updated_order is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Order not found",
+        )
+
+    return updated_order

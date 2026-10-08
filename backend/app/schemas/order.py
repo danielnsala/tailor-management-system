@@ -28,6 +28,12 @@ class JobResponse(BaseModel):
     price: Decimal
     details: str
 
+class JobUpdate(BaseModel):
+    job_type: JobType | None = None
+    garment_type: str | None = None
+    price: Money | None = None
+    details: str | None = None
+
 class OrderCreate(BaseModel):
     due_date: date
     notes: str | None = None
@@ -53,3 +59,6 @@ class OrderFinancialSummary(BaseModel):
     total_price: Decimal
     amount_paid: Decimal
     balance: Decimal
+
+class OrderUpdate(BaseModel):
+    status: OrderStatus

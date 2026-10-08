@@ -57,3 +57,21 @@ class OrderService:
                 Order.customer_id == customer_id,
             )
         ).scalar_one_or_none()
+
+    def update_order_status(
+        self,
+        customer_id: int,
+        order_id: int,
+        new_status: OrderStatus,
+    ) -> Order | None:
+        order = self.get_order(customer_id, order_id)
+
+        if order is None:
+            return None
+
+        order.status = new_status
+
+        self.db_session.commit()
+        self.db_session.refresh(order)
+
+        return order
