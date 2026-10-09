@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.schemas.order import OrderCreate, OrderFinancialSummary, OrderResponse, OrderUpdate
-from app.services.order_service import OrderService
+from app.services.order_service import OrderDeletionError, OrderService
 from app.services.payment_service import PaymentService
 from app.core.dependencies import get_current_admin
 
@@ -120,3 +120,32 @@ def update_order_status(
         )
 
     return updated_order
+
+@router.delete(
+    "/{order_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_order(
+    customer_id: int,
+    order_id: int,
+    db: Session = Depends(get_db),
+):
+    service = OrderService(db)
+
+    try:
+        deleted = service.delete_order(
+            customer_id,
+            order_id,
+        )
+
+    except OrderDeletionError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
+
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Order not found",
+        )

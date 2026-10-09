@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.customer import Customer
 from app.models.measurement import Measurement
 from app.models.measurement_set import MeasurementSet
-from app.schemas.measurement import MeasurementSetCreate
+from app.schemas.measurement import MeasurementSetCreate, MeasurementUpdate
 
 
 class MeasurementService:
@@ -64,3 +64,62 @@ class MeasurementService:
                 MeasurementSet.customer_id == customer_id,
             )
         ).scalar_one_or_none()
+
+    def update_measurement(
+        self,
+        customer_id: int,
+        measurement_set_id: int,
+        measurement_id: int,
+        measurement_update: MeasurementUpdate,
+    ) -> Measurement | None:
+
+        measurement = self.db_session.scalar(
+            select(Measurement)
+            .join(MeasurementSet)
+            .where(
+                Measurement.id == measurement_id,
+                Measurement.measurement_set_id == measurement_set_id,
+                MeasurementSet.customer_id == customer_id,
+            )
+        )
+
+        if measurement is None:
+            return None
+
+        update_data = measurement_update.model_dump(
+            exclude_unset=True,
+            exclude_none=True,
+        )
+
+        for field, value in update_data.items():
+            setattr(measurement, field, value)
+
+        self.db_session.commit()
+        self.db_session.refresh(measurement)
+
+        return measurement
+
+    def delete_measurement(
+        self,
+        customer_id: int,
+        measurement_set_id: int,
+        measurement_id: int,
+    ) -> bool:
+
+        measurement = self.db_session.scalar(
+            select(Measurement)
+            .join(MeasurementSet)
+            .where(
+                Measurement.id == measurement_id,
+                Measurement.measurement_set_id == measurement_set_id,
+                MeasurementSet.customer_id == customer_id,
+            )
+        )
+
+        if measurement is None:
+            return False
+
+        self.db_session.delete(measurement)
+        self.db_session.commit()
+
+        return True

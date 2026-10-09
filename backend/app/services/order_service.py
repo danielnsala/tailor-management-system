@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from app.models.customer import Customer
@@ -8,7 +8,10 @@ from app.models.job import Job
 from app.models.order import Order
 from app.models.enums import OrderStatus
 from app.schemas.order import OrderCreate
+from app.models.payment import Payment
 
+class OrderDeletionError(Exception):
+    pass
 
 class OrderService:
     def __init__(self, db_session: Session):
@@ -75,3 +78,43 @@ class OrderService:
         self.db_session.refresh(order)
 
         return order
+
+    def delete_order(
+        self,
+        customer_id: int,
+        order_id: int,
+    ) -> bool:
+
+        order = self.db_session.scalar(
+            select(Order).where(
+                Order.id == order_id,
+                Order.customer_id == customer_id,
+            )
+        )
+
+        if order is None:
+            return False
+
+        payment_count = self.db_session.scalar(
+            select(func.count(Payment.id))
+            .where(Payment.order_id == order_id)
+        )
+
+        if payment_count > 0:
+            raise OrderDeletionError(
+                "Cannot delete an order with recorded payments. "
+                "Cancel the order instead."
+            )
+
+        # Explicitly delete associated jobs.
+        jobs = self.db_session.scalars(
+            select(Job).where(Job.order_id == order_id)
+        ).all()
+
+        for job in jobs:
+            self.db_session.delete(job)
+
+        self.db_session.delete(order)
+        self.db_session.commit()
+
+        return True

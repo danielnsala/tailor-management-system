@@ -37,3 +37,7 @@ class MeasurementSetResponse(BaseModel):
     unit: MeasurementUnit
     notes: str | None = None
     measurements: list[MeasurementResponse]
+
+class MeasurementUpdate(BaseModel):
+    measurement_type: str | None = None
+    value: PositiveDecimal | None = Field(default=None, gt=0)

@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.schemas.measurement import (
+    MeasurementResponse,
     MeasurementSetCreate,
     MeasurementSetResponse,
+    MeasurementUpdate,
 )
 from app.services.measurement_service import MeasurementService
 from app.core.dependencies import get_current_admin
@@ -59,3 +61,56 @@ def get_measurement_set(
             detail="Measurement set not found",
         )
     return measurement_set
+
+@router.patch(
+    "/{measurement_set_id}/measurements/{measurement_id}",
+    response_model=MeasurementResponse,
+)
+def update_measurement(
+    customer_id: int,
+    measurement_set_id: int,
+    measurement_id: int,
+    measurement_update: MeasurementUpdate,
+    db: Session = Depends(get_db),
+):
+    service = MeasurementService(db)
+
+    updated = service.update_measurement(
+        customer_id,
+        measurement_set_id,
+        measurement_id,
+        measurement_update,
+    )
+
+    if updated is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Measurement not found",
+        )
+
+    return updated
+
+
+@router.delete(
+    "/{measurement_set_id}/measurements/{measurement_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_measurement(
+    customer_id: int,
+    measurement_set_id: int,
+    measurement_id: int,
+    db: Session = Depends(get_db),
+):
+    service = MeasurementService(db)
+
+    deleted = service.delete_measurement(
+        customer_id,
+        measurement_set_id,
+        measurement_id,
+    )
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Measurement not found",
+        )
