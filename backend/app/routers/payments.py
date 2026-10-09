@@ -4,10 +4,12 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.payment import PaymentCreate, PaymentResponse
 from app.services.payment_service import PaymentService, OverpaymentError
+from app.core.dependencies import get_current_admin
 
 router = APIRouter(
     prefix="/orders/{order_id}/payments",
     tags=["Payments"],
+    dependencies=[Depends(get_current_admin)],
 )
 
 @router.post("/", response_model=PaymentResponse, status_code=status.HTTP_201_CREATED)

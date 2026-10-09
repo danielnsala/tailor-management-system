@@ -4,11 +4,13 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.order import JobUpdate, JobResponse
 from app.services.job_service import JobService, InvalidJobPriceError
+from app.core.dependencies import get_current_admin
 
 
 router = APIRouter(
     prefix="/orders/{order_id}/jobs",
     tags=["Jobs"],
+    dependencies=[Depends(get_current_admin)],
 )
 
 @router.patch(

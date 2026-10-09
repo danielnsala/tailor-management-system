@@ -7,11 +7,13 @@ from app.schemas.measurement import (
     MeasurementSetResponse,
 )
 from app.services.measurement_service import MeasurementService
+from app.core.dependencies import get_current_admin
 
 
 router = APIRouter(
     prefix="/customers/{customer_id}/measurement-sets",
     tags=["Measurements"],
+    dependencies=[Depends(get_current_admin)],
 )
 
 @router.post("/", response_model=MeasurementSetResponse, status_code=status.HTTP_201_CREATED)

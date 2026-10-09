@@ -12,6 +12,8 @@ from app.services.gallery_service import (
     DuplicateGalleryImageError,
 )
 
+from app.core.dependencies import get_current_admin
+
 router = APIRouter(
     prefix="/gallery",
     tags=["Gallery"],
@@ -22,6 +24,7 @@ router = APIRouter(
     "/",
     response_model=GalleryItemResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_admin)],
 )
 def create_gallery_item(
     gallery_create: GalleryItemCreate,
@@ -61,7 +64,9 @@ def get_gallery_item(
     return gallery_item
 
 
-@router.patch("/{item_id}", response_model=GalleryItemResponse)
+@router.patch("/{item_id}", 
+              response_model=GalleryItemResponse,
+              dependencies=[Depends(get_current_admin)],)
 def update_gallery_item(
     item_id: int,
     gallery_update: GalleryItemUpdate,
@@ -88,7 +93,8 @@ def update_gallery_item(
     return gallery_item
 
 
-@router.delete("/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{item_id}", status_code=status.HTTP_204_NO_CONTENT,
+               dependencies=[Depends(get_current_admin)],)
 def delete_gallery_item(
     item_id: int,
     db: Session = Depends(get_db),

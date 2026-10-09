@@ -5,11 +5,13 @@ from app.database import get_db
 from app.schemas.order import OrderCreate, OrderFinancialSummary, OrderResponse, OrderUpdate
 from app.services.order_service import OrderService
 from app.services.payment_service import PaymentService
+from app.core.dependencies import get_current_admin
 
 
 router = APIRouter(
     prefix="/customers/{customer_id}/orders",
     tags=["Orders"],
+    dependencies=[Depends(get_current_admin)],
 )
 
 @router.post("/", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)

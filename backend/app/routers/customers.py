@@ -9,10 +9,12 @@ from app.schemas.customer import (
 )
 from app.services.customer_service import CustomerService
 
+from app.core.dependencies import get_current_admin
 
 router = APIRouter(
     prefix="/customers",
     tags=["Customers"],
+    dependencies=[Depends(get_current_admin)],
 )
 
 @router.post("/", response_model=CustomerResponse, status_code=status.HTTP_201_CREATED)
