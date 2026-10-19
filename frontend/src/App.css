@@ -138,3 +138,54 @@ form button {
     align-items: flex-start;
   }
 }
+
+.measurement-manager {
+  margin-top: 40px;
+  padding: 24px;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.measurement-manager select {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0 24px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.measurement-set-card {
+  background: white;
+  padding: 20px;
+  margin: 16px 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.measurement-set-card ul {
+  padding-left: 24px;
+}
+
+.measurement-form {
+  margin: 24px 0;
+}
+
+.measurement-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.measurement-row input {
+  min-width: 0;
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .measurement-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -8,6 +8,7 @@ import type { Customer } from "./api/customers";
 import CustomerList from "./components/CustomerList";
 import EditCustomerForm from "./components/EditCustomerForm";
 import { deleteCustomer } from "./api/customers";
+import MeasurementManager from "./components/MeasurementManager";
 import "./App.css";
 
 
@@ -125,10 +126,15 @@ function App() {
           onCancel={() => setEditingCustomer(null)}
         />
       )}
+
+      <MeasurementManager
+        customers={customers}
+        token={token}
+      />
     </main>
   );
-
   
+
 async function handleDeleteCustomer(customer: Customer) {
   if (deletingCustomerId !== null) return;
 
