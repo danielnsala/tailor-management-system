@@ -1,0 +1,140 @@
+.dashboard {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.dashboard h1 {
+  margin-bottom: 8px;
+}
+
+.dashboard > p {
+  color: #64748b;
+  margin-bottom: 32px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.stat-card h3 {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.stat-card p {
+  font-size: 32px;
+  font-weight: bold;
+  color: #0f172a;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.dashboard button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.dashboard button:hover {
+  background-color: #1d4ed8;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 500px;
+  margin-top: 40px;
+}
+
+form input,
+form textarea {
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font: inherit;
+}
+
+form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+form button {
+  background: #2563eb;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.customer-list {
+  margin-top: 40px;
+}
+
+.customer-item {
+  background: white;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.customer-item p {
+  margin: 6px 0;
+  color: #64748b;
+}
+
+.customer-list input[type="search"] {
+  width: 100%;
+  padding: 12px;
+  margin: 16px 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.customer-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.customer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.customer-actions button {
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .customer-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

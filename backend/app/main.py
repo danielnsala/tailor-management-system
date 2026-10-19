@@ -6,12 +6,22 @@ from app.routers.payments import router as payments_router
 from app.routers.jobs import router as jobs_router
 from app.routers.gallery import router as gallery_router
 from app.routers.auth import router as auth_router
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="Tailor Management System",
     description="A backend API for managing customers, orders, tailoring jobs, payments, measurements, and gallery items in a tailor management system.",
     version="1.0.0",
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
+)
+
 app.include_router(customers_router)
 app.include_router(measurements_router)
 app.include_router(orders_router)

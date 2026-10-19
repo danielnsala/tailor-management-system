@@ -7,7 +7,8 @@ from app.schemas.customer import (
     CustomerUpdate,
     CustomerResponse,
 )
-from app.services.customer_service import CustomerService
+
+from app.services.customer_service import CustomerService, CustomerHasRecordsError
 
 from app.core.dependencies import get_current_admin
 
@@ -73,13 +74,30 @@ def partial_update_customer(
         )
     return updated_customer
 
-@router.delete("/{customer_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_customer(customer_id: int, db: Session = Depends(get_db)):
+
+@router.delete(
+    "/{customer_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_customer(
+    customer_id: int,
+    db: Session = Depends(get_db),
+):
     service = CustomerService(db)
-    success = service.delete_customer(customer_id)
+
+    try:
+        success = service.delete_customer(customer_id)
+    except CustomerHasRecordsError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
+
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Customer not found",
         )
+
     return None
+

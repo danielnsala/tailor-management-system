@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from app.models.customer import Customer
 from app.schemas.customer import CustomerCreate, CustomerUpdate
 
+class CustomerHasRecordsError(Exception):
+    pass
 
 class CustomerService:
     def __init__(self, db_session: Session):
@@ -34,8 +36,17 @@ class CustomerService:
 
     def delete_customer(self, customer_id: int) -> bool:
         customer = self.get_customer(customer_id)
-        if not customer:
+
+        if customer is None:
             return False
+
+        if customer.orders or customer.measurement_sets:
+            raise CustomerHasRecordsError(
+                "Cannot delete a customer with existing orders "
+                "or measurement records."
+            )
+
         self.db_session.delete(customer)
         self.db_session.commit()
+
         return True
